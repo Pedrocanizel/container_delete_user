@@ -17,10 +17,10 @@ def delete_row(request):
     try:
         data = JSONParser().parse(request)
         #coluna = list(data.keys())[0]
-        email = list(data.items())  
-        email = email[0][1]
-        delete(email)
-        retorno = f'O email {email} foi deletado com sucesso'
+        id_user = list(data.items())  
+        id_user = id_user[0][1]
+        delete(id_user)
+        retorno = f'O usuário com ID {id_user} foi deletado com sucesso'
         return JsonResponse(retorno, status=201, safe=False)
 
     except Exception as ex:

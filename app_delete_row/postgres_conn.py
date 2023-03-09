@@ -10,10 +10,10 @@ def get_connect():
     return con
 
 
-def delete(email):
+def delete(id_user):
     conn = get_connect()
     cursor = conn.cursor()
-    query = f"""DELETE FROM public.cadastro_usuario WHERE email LIKE '%{email}%';"""
+    query = f"""DELETE FROM public.permissions_user WHERE id_user = '{id_user}';"""
     cursor.execute(query)
     conn.commit()
     conn.close()

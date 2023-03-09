@@ -21,5 +21,5 @@ from app_delete_row import views as lcviews
 # Additionally, we include login URLs for the browsable API.
 
 urlpatterns = [
-    path('app_delete_row/', lcviews.delete_row),
+    path('delete_permission/', lcviews.delete_row),
 ]
