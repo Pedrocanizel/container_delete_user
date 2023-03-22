@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
-from .postgres_conn import delete
+from .postgres_conn import delete, conferir_search_id
 from django.views.decorators.csrf import csrf_exempt
 from . import valida_token as vt 
 
@@ -11,8 +11,29 @@ from . import valida_token as vt
 @api_view(['DELETE'])
 def delete_row(request):
     
-    token = request.headers['Authorization']
     data = request.data
+    contagem_searchid = conferir_search_id(data['name'], data['email'])
+    
+    if contagem_searchid > 1:
+        retorno = {
+            "FL_STATUS": False,
+            "erro": "Existe mais de um search_id, procure o administrador"
+        }
+        return JsonResponse(retorno, status=400)
+    
+    elif contagem_searchid < 1:
+        retorno = {
+            "FL_STATUS": False,
+            "erro": "Esse search_id nao existe"
+        }
+        return JsonResponse(retorno, status=400)
+    
+    else:
+        pass
+    
+    
+    token = request.headers['Authorization']
+    
     email = request.headers['email']
     status = vt.valida_token_navegacao(email, token, 'nav')
     status = status.json()
