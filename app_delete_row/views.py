@@ -4,27 +4,38 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from .postgres_conn import delete
+from django.views.decorators.csrf import csrf_exempt
+from . import valida_token as vt 
 
-'''
-Para deleter, fazer uma requisição 'DELETE' e
-enviar a chave primária (email) para deleção.
-'''
-
-
+@csrf_exempt
 @api_view(['DELETE'])
 def delete_row(request):
+    
+    token = request.headers['Authorization']
+    data = request.data
+    email = request.headers['email']
+    status = vt.valida_token_navegacao(email, token, 'nav')
+    status = status.json()
+    if status['FL_STATUS'] == False:
+        resposta = {
+            "msg": "token expirado",
+            "FL_STATUS": False        
+            }
+        return JsonResponse(resposta, status=400, safe=False)
 
     try:
-        data = JSONParser().parse(request)
-        #coluna = list(data.keys())[0]
-        id_user = list(data.items())  
-        id_user = id_user[0][1]
-        delete(id_user)
-        retorno = f'O usuário com ID {id_user} foi deletado com sucesso'
+        
+        name = data['name']  
+        email = data['email']
+        delete(name, email)
+        retorno = {
+            "FL_STATUS": True
+        }
         return JsonResponse(retorno, status=201, safe=False)
 
     except Exception as ex:
         response = {
+            "FL_STATUS": False,
             "error": str(ex.args[0])
         }
         return JsonResponse(response, status=400)
