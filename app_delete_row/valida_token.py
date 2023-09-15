@@ -10,7 +10,7 @@ def get_header():
 
 def valida_token_navegacao(email, token, finalidade):
     session = requests.session()
-    url = "http://35.209.24.231:8008/token_confirmation/"    
+    url = "http://127.0.0.1:8000/tpath/"    
     h = get_header()
     d = json.dumps(
         {
